@@ -1,4 +1,4 @@
-__author__ = 'copycat'
+__author__ = 'copycat.liuATgmail.com'
 
 
 
@@ -15,15 +15,19 @@ class filter:
         c=0
 	#print 'route delete %s' % self.gateway
 	fo.write( """#!/bin/sh
+# Tested on: XiaoMi Router R1D  version:0.9.36 
+# SPLIT_T by Copycat Arts.
+# Great Knowledge comes great power.
+
 export PATH="/bin:/sbin:/usr/sbin:/usr/bin"
 
-OLDGW=`ip route show | grep '^default' | grep 'dev pppoe-wan' | sed -e 's/default via \([^ ]*\).*/\\1/' | head -1`
-#OLDGW='192.168.1
+DEV='pppoe-wan'
+
+OLDGW=`ip route show | grep '^default' | grep 'dev $DEV' | sed -e 's/default via \([^ ]*\).*/\\1/' | head -1`
 if [ $OLDGW == '' ]; then
     exit 0
 fi
 
-DEV='pppoe-wan'
 """)
         for line in fp:
             #(x,country,type,ip,mask,x,x)
@@ -35,7 +39,7 @@ DEV='pppoe-wan'
                     fo.write(out)
                     c+=1
         print 'total= %d' % c
-	fo.write('route add to 69.167.138.0/24 via $OLDGW dev $DEV table vpn\n')
+	fo.write('ip route add to 69.167.138.0/24 via $OLDGW dev $DEV table vpn\n')
         fo.close()
         fp.close()
 
