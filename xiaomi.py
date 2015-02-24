@@ -9,7 +9,7 @@ class filter:
     DEV = 'DEV'
     up = 'vpnup.sh'
     down = 'vpndown.sh'
-    extraList = [ '69.167.138.0' ] #appannie
+    extraList = [ '69.167.138.0/24', '176.0.0.0/8', '205.251.192.0/18', '72.21.192.0/19' ] #appannie
 
     def load(self):
         fp = open(self.file,'r')
@@ -38,12 +38,13 @@ fi
             list = line.split('|')
             if len(list) == 7:
                 if list[1] == 'CN' and list[2]=='ipv4':
-                    mask = self.con( list[4])
+                    mask = self.con( list[4] )
                     self.writeRules(list[3], mask, self.gateway, self.DEV)
                     c+=1
         print 'total= %d' % c
-        for ip in self.extraList:
-            self.writeRules( ip, '24', self.gateway, self.DEV )
+        for ipmask in self.extraList:
+            (ip,mask) = ipmask.split('/')
+            self.writeRules( ip, mask, self.gateway, self.DEV )
         self.foUp.close()
         self.foDown.close()
         fp.close()
@@ -64,14 +65,14 @@ fi
         return "%s.%s.%s.%s" % (d1,d2,d3,d4)
 
     def con(self, mask):
-	c=0
-	mask= int(mask)-1
-	for i in range(0,32):
-	    if( mask & 0x1 == 0 ):
-		c=c+1
-	    mask=mask>>1
-	return c
-	
+        c=0
+        mask= int(mask)-1
+        for i in range(0,32):
+            if( (mask & 0x1) == 1 ):
+                c=c+1
+                mask=mask>>1
+        return 32-c
+
 
 f = filter()
 #print f.convert(32768)
