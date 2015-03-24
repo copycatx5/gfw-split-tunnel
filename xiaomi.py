@@ -9,7 +9,7 @@ class filter:
     DEV = 'DEV'
     up = 'vpnup.sh'
     down = 'vpndown.sh'
-    extraList = [ '69.167.138.0/24', '176.0.0.0/8', '205.251.192.0/18', '72.21.192.0/19' ] #appannie
+    extraList = [ '69.167.138.0/24'] #, '92.223.16.0/16' ] #appannie #amazon.com #92.223-wot
 
     def load(self):
         fp = open(self.file,'r')
